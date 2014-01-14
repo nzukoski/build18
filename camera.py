@@ -1,15 +1,20 @@
 #!/usr/bin/env python
-from random import randint
+
+import uuid
 
 class Camera(object):
-	def __init__(self, id):
-		self.id = id
-	def __str__(self):
-		return "Camera id: " + id
 	def capture(self):
-		#capture an image from raspicam
-		return 
+		image = image #capture an image from raspicam
+		return image
+	def save(self, image, path = None):
+		path = path or ""
+		imageId = str(uuid.uuid4())
+		with open(path + imageId+'.png', 'wb') as f:
+			f.write(image)
+		return imageId
 
-cam = Camera(randint(0,100))
-pic = cam.capture()
+cam = Camera()
+image = cam.capture()
+cam.save(image)
+print imageId
 #do something with pic

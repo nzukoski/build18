@@ -15,6 +15,6 @@ class Camera(object):
 
 cam = Camera()
 image = cam.capture()
-cam.save(image)
+imageId = cam.save(image)
 print imageId
 #do something with pic

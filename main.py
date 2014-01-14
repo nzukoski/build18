@@ -35,6 +35,10 @@ def display(image):
 	# output the image to the screen/update current
 	break
 
+# Stitch images together using magic
+def stitchImages(images):
+	#magic
+	return image
 
 # Main loop polls raspi's for images and processes running average
 def main():

@@ -1,12 +1,15 @@
 #!/usr/bin/env python
-
+import cv2
+import numpy as np
 from fabric.api import *
 from time import sleep
+
 
 # globals 
 env.user = "pi"
 env.password = "build18"
-remoteHosts = [""]
+remoteHosts = ["192.168.1.17"]
+avg = np.float32(cv2.imread("temp.jpeg"))
 
 # Holds info on running average (delta heat map) of images
 class Average(object):
@@ -25,15 +28,15 @@ def runCommand(command, host):
     return picId
 
 # Get a file from a remote host
-def getFile(id, host):	# id = remote-path/picture-id (try and specify remote absolute path on remote-host)
+def getFile(remotePath, localPath, host):
 	env.host_string = host
-	pic = get(id)
+	pic = get(remotePath, localPath)
 	return pic
 
 # Display image on screen
 def display(image):
 	# output the image to the screen/update current
-	break
+	pass
 
 # Stitch images together using magic
 def stitchImages(images):
@@ -47,14 +50,26 @@ def main():
 		images = []
 		for host in remoteHosts:	# get new images
 			try:
-				picId = runCommand("./camera.py", host)
-				pic = getFile(picId, host)
-				images.append(pic)
+				with cd('~/build18/images'):
+					picPath = runCommand("/home/pi/build18/images/updatelatest.sh", host)
+					print picPath
+					pic = getFile(picPath, "~/roomal/build18/temp.jpeg", host)
 			except:
-				print "Error: ", sys.exc_info()[0]
+				print "Error with ssh"
 		# stitch images
-		stitch = stitchImages(images)
-		average.update(stitch)
-		display(average.image)
-		sleep(1)	# sleep in seconds before polling cameras
+		print 
+		newImage = cv2.imread("temp.jpeg")
+
+		cv2.accumulateWeighted(newImage, avg, 0.1)
+		
+		res = cv2.convertScaleAbs(avg)
+		cv2.imshow('img', newImage)
+		cv2.imshow('avg', res)
+		k = cv2.waitKey(10)
+ 		
+		if k == 27:
+			break
+
+main()
+cv2.destroyAllWindows()
 

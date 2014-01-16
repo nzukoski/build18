@@ -26,16 +26,24 @@ class Roi(object):
 		self.intensity = self.calculateIntensity()
 		return self.intensity
 
-# Button: adds team to teams list
+# Button: adds team to sorted (intensity-ascending) teams list
 def addTeam(image, x1, x2, y1, y2, id = None):
 	t = Roi(image, x1, x2, y1, y2, id)
-	teams.append(t)
+	if len(teams) <= 0:
+		teams.append(t)
+	else:
+		for i in xrange(len(teams)):
+			if teams[i].intensity < t.intensity:
+				teams.insert(i,t) # prepend
+				return
+		teams.append(t)
 
 # Button: remove team from teams
 def removeTeam(id):
 	for t in teams:
 		if t.id == id:
 			teams.remove(t)
+
 
 # Get an image (stream) to display
 def getImage():
@@ -45,8 +53,12 @@ def getImage():
 image = getImage()
 teams = []
 
+
+addTeam(image,0,3,0,1)	# teams
+addTeam(image,0,2,0,1)	# teams
+addTeam(image,0,1,0,1)	# teams
+
 for i in xrange(3):
-	addTeam(image,0,3,0,1)	# teams
-	print teams[i].id
+	print teams[i].id," ", teams[i].intensity
 
 

@@ -28,7 +28,8 @@ heatmap = np.zeros((480,640), np.uint8)
 while(1):
     _,f = c.read()
     converted_f = np.float32(f)
-    diffImage = cv2.absdiff(avg1, converted_f)
+    diffImage = cv2.subtract(avg1, converted_f)
+    #diffImage = cv2.absdiff(avg1, converted_f)
     absDiff = cv2.cvtColor(diffImage, cv2.COLOR_BGR2GRAY)
     retval, threshold = cv2.threshold(absDiff, 65, 1, cv2.THRESH_BINARY)
     heatmap += threshold

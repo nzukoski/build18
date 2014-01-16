@@ -8,7 +8,7 @@ from time import sleep
 # globals 
 env.user = "pi"
 env.password = "build18"
-remoteHosts = ["192.168.1.17"]
+remoteHosts = ["128.237.241.93"]
 avg = np.float32(cv2.imread("temp.jpeg"))
 
 # Holds info on running average (delta heat map) of images
@@ -61,7 +61,7 @@ def main():
 		newImage = cv2.imread("temp.jpeg")
 
 		cv2.accumulateWeighted(newImage, avg, 0.1)
-		
+
 		res = cv2.convertScaleAbs(avg)
 		cv2.imshow('img', newImage)
 		cv2.imshow('avg', res)

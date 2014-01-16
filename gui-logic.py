@@ -26,7 +26,7 @@ class Roi(object):
 		self.intensity = self.calculateIntensity()
 		return self.intensity
 
-# Button: adds team to sorted (intensity-ascending) teams list
+# Button: adds team to sorted (intensity-descending) teams list
 def addTeam(image, x1, x2, y1, y2, id = None):
 	t = Roi(image, x1, x2, y1, y2, id)
 	if len(teams) <= 0:
@@ -54,9 +54,9 @@ image = getImage()
 teams = []
 
 
-addTeam(image,0,3,0,1)	# teams
 addTeam(image,0,2,0,1)	# teams
 addTeam(image,0,1,0,1)	# teams
+addTeam(image,0,3,0,1)	# teams
 
 for i in xrange(3):
 	print teams[i].id," ", teams[i].intensity

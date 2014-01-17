@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import numpy as np
+
 # Region of interest
 class Roi(object):
 	roiCount = 0	# static Roi counter used as id
@@ -45,6 +47,9 @@ def removeTeam(id):
 		if t.id == id:
 			teams.remove(t)
 
+def removeAll():
+	teams = []
+
 def sortTeams():
 	teams.sort(key=lambda t: t.intensity, reverse=True)
 
@@ -58,22 +63,21 @@ def updateAll(image):
 	for t in teams:
 		t.update(image)
 
+# Creates a rectangular border mask from given params
+def createBorderMask(img, x,x2,y,y2, color = None, borderWidth = None):
+	color = color or 255
+	borderWidth = borderWidth or 10
+	h = y2 - y
+	w = x2 - x
+	mask = np.zeros(img.shape[:2],np.uint8)
+	mask[y:y+borderWidth,x:x+w] = color		# top
+	mask[y+h:y+h+borderWidth,x:x+w+borderWidth] = color	# bottom
+	mask[y:y+h,x:x+borderWidth] = color		# left
+	mask[y:y+h,x+w:x+w+borderWidth] = color	# right 
+	return mask
 
-# ---------------------- Logic goes here ---------------------------------
-image = getImage()	# Pass in or get an image to work with
+
 teams = []			# List of teams
 
-
-addTeam(0,2,0,1, [100,100,100])	# teams
-addTeam(0,1,0,1, [150,150,150])	# teams
-tId = addTeam(0,3,0,1)	# teams
-
-removeTeam(tId)	# remove a team
-
-updateAll(image)
-sortTeams()
-
-for i in xrange(len(teams)):
-	print teams[i].id," ", teams[i].intensity
 
 

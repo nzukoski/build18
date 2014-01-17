@@ -3,27 +3,25 @@
 # Region of interest
 class Roi(object):
 	roiCount = 0	# static Roi counter used as id
-	def __init__(self, image, x1, x2, y1, y2, id = None):
+	def __init__(self, x1, x2, y1, y2, id = None):
 		self.id = id or self.__class__.roiCount
 		self.__class__.roiCount += 1
-		self.image = image
 		self.x1 = x1
 		self.x2 = x2
 		self.y1 = y1
 		self.y2 = y2
-		self.update()
 
 	# Calculates color intensity in a region of interest
-	def calculateIntensity(self):
+	def calculateIntensity(self,image):
 		intensity = 0
 		for row in xrange(self.y1,self.y2):
 			for col in xrange(self.x1,self.x2):
-				intensity += self.image[row][col]
+				intensity += image[row][col]
 		return intensity
 
 	# Updates Roi
-	def update(self):
-		self.intensity = self.calculateIntensity()
+	def update(self, image):
+		self.intensity = self.calculateIntensity(image)
 		return self.intensity
 
 # Button: adds team to sorted (intensity-descending) teams list
@@ -52,8 +50,10 @@ def getImage():
 	image = [[1,2,3,4,5],[1,2,3,4,5]] # 2 dimensional grayscale image
 	return image
 
-image = getImage()
-teams = []
+
+# ---------------------- Logic goes here ---------------------------------
+image = getImage()	# Pass in or get an image to work with
+teams = []			# List of teams
 
 
 addTeam(image,0,2,0,1)	# teams

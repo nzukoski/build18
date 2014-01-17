@@ -131,8 +131,8 @@ if __name__ == "__main__":
     CC.connectToAllHosts()       
     CC.startMotionDetection()
     mySW = ControlMainWindow()
-    #for i in xrange(50):
-    #    mySW.insert_team("0:hi" + str(i) + ":0,0:150,150")
+    for i in xrange(50):
+       mySW.insert_team("0:hi" + str(i) + ":0,0:150,150")
     mySW.show()
     sys.exit(app.exec_())
 

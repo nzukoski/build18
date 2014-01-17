@@ -16,19 +16,17 @@ class Roi(object):
 		self.y2 = y2
 		self.color = color or [randint(1,254),randint(1,254),randint(1,254)] # white rgb
 		self.intensity = 0
-		self.mask = np.zeros((640,480), np.uint8)
+		self.mask = np.zeros((480,640), np.uint8)
 		for row in xrange(self.y1,self.y2):
 			for col in xrange(self.x1,self.x2):
 				self.mask[row][col] = 1
 
 	# Calculates color intensity in a region of interest
 	def calculateIntensity(self,image):
-		intensity = 0
-		# print image.shape
-		# intensity = cv2.mean(np.uint8(image), mask=self.mask)
-		for row in xrange(self.y1,self.y2):
-			for col in xrange(self.x1,self.x2):
-				intensity += image[row][col]
+		intensity = cv2.mean(np.int32(image), mask=self.mask)
+		# for row in xrange(self.y1, self.y2):
+		# 	for col in xrange(self.x1, self.x2):
+		# 		intensity += image[row][col]
 		return intensity
 
 	# Updates Roi

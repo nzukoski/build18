@@ -77,41 +77,43 @@ class CameraControl:
             self.frames.append(frame)
             self.thresholds.append(np.zeros((width,height), np.uint8))
 
-        newThread = threading.Thread(target=self.mainLoop, args=())
-        newThread.start()
+        for i in xrange(self.numHosts):
+            newThread = threading.Thread(target=self.mainLoopForCam, args=(i,))
+            newThread.start()
 
     # the meat
-    def mainLoop(self):
+    def mainLoopForCam(self, camNumber):
         # Main Loop
         self.run = True
         frameToShow = 0
         while (self.run):
-            for i in xrange(self.numHosts):
-                startTime = time()
-                capture = self.captureSources[i]
-                prevGray = np.float32(self.prevGrayFrames[i])
+            startTime = time()
+            capture = self.captureSources[camNumber]
+            prevGray = np.float32(self.prevGrayFrames[camNumber])
 
-                success, frame = capture.read()
-                if (not success):
-                    print "capture failed on host " + str(i)  + " continuing..."
-                    continue
+            success, frame = capture.read()
+            if (not success):
+                print "capture failed on host " + str(camNumber)  + " continuing..."
+                continue
 
-                if (self.record):
-                    videoRecorders[i].write(frame)
+            if (self.record):
+                videoRecorders[camNumber].write(frame)
 
-                self.frames[i] = frame
-                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                flow = cv2.calcOpticalFlowFarneback(prevGray, gray, 0.5, 1, 20, 3, 5, 1.2, 0)
-                self.prevGrayFrames[i] = gray
+            self.frames[camNumber] = frame
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            flow = cv2.calcOpticalFlowFarneback(prevGray, gray, 0.5, 1, 20, 3, 5, 1.2, 0)
+            self.prevGrayFrames[camNumber] = gray
 
-                # building flow magnitude
-                fx, fy = flow[:,:,0], flow[:,:,1]
-                v = np.sqrt(fx*fx+fy*fy)
-                normalized = np.uint8(np.minimum(v*4, 255))
-                retval, threshold = cv2.threshold(normalized, 20, 1, cv2.THRESH_BINARY)
-                self.thresholds[i] = threshold
-                self.heatmaps[i] += threshold
+            # building flow magnitude
+            fx, fy = flow[:,:,0], flow[:,:,1]
+            v = np.sqrt(fx*fx+fy*fy)
+            normalized = np.uint8(np.minimum(v*4, 255))
+            retval, threshold = cv2.threshold(normalized, 20, 1, cv2.THRESH_BINARY)
+            self.thresholds[camNumber] = threshold
+            self.heatmaps[camNumber] += threshold
 
+    def shutdown(self):
+        self.run = False
         for c in self.captureSources:
             c.release()
 
@@ -131,7 +133,7 @@ while (True):
         frameToShow = 2
 
     if k == 27: # esc
-        cc.run = False
+        cc.shutdown()
         break
 
     for i in xrange(cc.numHosts):

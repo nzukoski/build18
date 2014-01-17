@@ -116,33 +116,34 @@ class CameraControl:
         self.run = False
         for c in self.captureSources:
             c.release()
+            
+if __name__ == "__main__":
+    cc = CameraControl()
+    cc.connectToAllHosts()
+    cc.startMotionDetection()
+    frameToShow = 0
 
-cc = CameraControl()
-cc.connectToAllHosts()
-cc.startMotionDetection()
-frameToShow = 0
+    while (True):
+        k = cv2.waitKey(100)
 
-while (True):
-    k = cv2.waitKey(100)
+        if k == 49: # 1
+            frameToShow = 0
+        if k == 50: # 2
+            frameToShow = 1
+        if k == 51: # 3
+            frameToShow = 2
 
-    if k == 49: # 1
-        frameToShow = 0
-    if k == 50: # 2
-        frameToShow = 1
-    if k == 51: # 3
-        frameToShow = 2
+        if k == 27: # esc
+            cc.shutdown()
+            break
 
-    if k == 27: # esc
-        cc.shutdown()
-        break
-
-    for i in xrange(cc.numHosts):
-        if (frameToShow == 0):
-            cv2.imshow("host_" + str(i), cc.getLatestFrames()[i])
-        elif (frameToShow == 1):
-            cv2.imshow("host_" + str(i), cc.getLatestHeatmaps()[i])
-        elif (frameToShow == 2):
-            cv2.imshow("host_" + str(i), cc.getLatestThresholds()[i] * 255)
+        for i in xrange(cc.numHosts):
+            if (frameToShow == 0):
+                cv2.imshow("host_" + str(i), cc.getLatestFrames()[i])
+            elif (frameToShow == 1):
+                cv2.imshow("host_" + str(i), cc.getLatestHeatmaps()[i])
+            elif (frameToShow == 2):
+                cv2.imshow("host_" + str(i), cc.getLatestThresholds()[i] * 255)
 
 
             

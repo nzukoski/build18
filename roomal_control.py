@@ -1,10 +1,12 @@
 import cv2
 import numpy as np
+import threading
 from time import time, sleep
 startTime = time()
 
-remoteHosts = ["http://192.168.1.4:8081/video1.mjpeg", "http://192.168.1.11:8081/video1.mjpeg"]
-#remoteHosts = ["testVideo.mov"]
+#remoteHosts = ["http://192.168.2.4:8081/video1.mjpeg",
+#                "http://192.168.2.5:8081/video1.mjpeg", "http://192.168.2.6:8081/video1.mjpeg"]
+remoteHosts = ["testVideo.mov", "testVideo.mov", "testVideo.mov", "testVideo.mov"]
 numHosts = len(remoteHosts)
 captureSources = []
 prevGrayFrames = []
@@ -12,11 +14,21 @@ heatmaps = []
 width = 640
 height = 480
 
-# Connect to to remote hosts
-for host in remoteHosts:
+def connectToHost(hostName):
     captureSource = cv2.VideoCapture(host)
-    print "connected to " + host
     captureSources.append(captureSource)
+
+# Connect to to remote hosts
+threads = []
+for host in remoteHosts:
+    newThread = threading.Thread(target=connectToHost, args= (host,))
+    newThread.daemon = True
+    threads.append(newThread)
+    newThread.start()
+
+# Wait for the threads
+for t in threads:
+    t.join()
 
 print "Connected to all hosts!"
 
@@ -36,7 +48,7 @@ for i in xrange(numHosts):
     capture = captureSources[i]
     success, frame = capture.read()
     if (not success):
-        print "capture failed on host " + i  + " continuing..."
+        print "capture failed on host " + str(i)  + " continuing..."
         continue
 
     # grab the width and height
@@ -46,24 +58,31 @@ for i in xrange(numHosts):
     prevGrayFrames.append(cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY))
     heatmaps.append(np.zeros((width,height), np.uint8))
 
+# Timing stuff
+totalTime = 0
+numFrames = 0
+
 # Main Loop
 run = True
 frameToShow = 0
 while (run):
     for i in xrange(numHosts):
+        startTime = time()
         capture = captureSources[i]
-        prevGray = prevGrayFrames[i]
+        prevGray = np.float32(prevGrayFrames[i])
 
         success, frame = capture.read()
         if (not success):
-            print "capture failed on host " + i  + " continuing..."
+            print "capture failed on host " + str(i)  + " continuing..."
+            print "average time: " + str( totalTime / numFrames)
+            cv2.waitKey()
             continue
 
         if (record):
             videoRecorders[i].write(frame)
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        flow = cv2.calcOpticalFlowFarneback(prevGray, gray, 0.5, 3, 15, 3, 5, 1.2, 0)
+        flow = cv2.calcOpticalFlowFarneback(prevGray, gray, 0.5, 1, 20, 3, 5, 1.2, 0)
         prevGrayFrames[i] = gray
 
         # building flow magnitude
@@ -79,6 +98,9 @@ while (run):
             cv2.imshow("host_" + str(i), heatmaps[i])
         elif (frameToShow == 2):
             cv2.imshow("host_" + str(i), threshold * 255)
+
+        totalTime += (time() - startTime)
+        numFrames += 1
 
     k = cv2.waitKey(15)
 

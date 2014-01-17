@@ -10,11 +10,13 @@ from roomal_control import CameraControl
 import gui_logic as gl
 
 def convertImg(frame):
+    newWidth = 427
+    newHeight = 320
+    scaledImage = cv2.resize(frame,(newWidth,newHeight))
     # try:
-    height, width, bytesPerComponent= frame.shape
+    height, width, bytesPerComponent= scaledImage.shape
     bytesPerLine = bytesPerComponent*width
-
-    img = QtGui.QImage(frame.data, width, height, bytesPerLine, QtGui.QImage.Format_RGB888)
+    img = QtGui.QImage(scaledImage.data, width, height, bytesPerLine, QtGui.QImage.Format_RGB888)
     img = QtGui.QPixmap.fromImage(img)
     return img
     # except:
@@ -67,12 +69,15 @@ class ControlMainWindow(QtGui.QMainWindow):
         if len(img) > 0:
             self.ui.label1.setPixmap(convertImg(img[0]))
             self.ui.label1.mousePressEvent = self.getPos
-
+        if len(img) > 1:
             self.ui.label2.setPixmap(convertImg(img[1]))
             self.ui.label2.mousePressEvent = self.getPos
-
+        if len(img) > 2:
             self.ui.label3.setPixmap(convertImg(img[2]))   # QLabels hold images that we update
             self.ui.label3.mousePressEvent = self.getPos
+        if len(img) > 3:
+            self.ui.label4.setPixmap(convertImg(img[3]))
+            self.ui.label4.mousePressEvent = self.getPos
 
             if ((self.currentFrame % 10) == 0):
                 for t in gl.teams:
@@ -139,8 +144,12 @@ if __name__ == "__main__":
     CC.connectToAllHosts()       
     CC.startMotionDetection()
     mySW = ControlMainWindow()
-    for i in xrange(5):
-       mySW.insert_team("0:hi" + str(i) + ":0,0:150,150")
+    # for i in xrange(5):
+    #    mySW.insert_team("0:hi" + str(i) + ":129,67:272,157")
+    mySW.insert_team("0:team1" + ":0,0:100,100")
+    mySW.insert_team("0:team2" + ":100,100:200,200")
+    mySW.insert_team("0:team3" + ":150,100:150,250")
+    mySW.insert_team("0:team4" + ":200,100:300,300")
     mySW.show()
     sys.exit(app.exec_())
 

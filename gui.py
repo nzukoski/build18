@@ -28,34 +28,41 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(800, 600)
-        MainWindow.setMinimumSize(QtCore.QSize(800, 600))
+        MainWindow.resize(1200, 800)
+        MainWindow.setMinimumSize(QtCore.QSize(1200, 800))
         self.centralWidget = QtGui.QWidget(MainWindow)
         self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
 
         self.tableWidget = QtGui.QTableWidget(self.centralWidget)
-        self.tableWidget.setGeometry(QtCore.QRect(380, 260, 351, 221))
+        self.tableWidget.setGeometry(QtCore.QRect(880, 20, 300, 650))
         self.tableWidget.setObjectName(_fromUtf8("tableWidget"))
         self.tableWidget.setRowCount(20)
         self.tableWidget.setColumnCount(2)
+        self.tableWidget.setHorizontalHeaderLabels(['Team', 'Intensity'])
 
         self.label1 = QtGui.QLabel(self.centralWidget)
-        self.label1.setGeometry(QtCore.QRect(10, 20, 351, 221))
+        self.label1.setGeometry(QtCore.QRect(10, 20, 427, 320))
         self.label1.setFrameShape(QtGui.QFrame.StyledPanel)
         self.label1.setFrameShadow(QtGui.QFrame.Raised)
         self.label1.setObjectName(_fromUtf8("label1"))
 
         self.label2 = QtGui.QLabel(self.centralWidget)
-        self.label2.setGeometry(QtCore.QRect(380, 20, 351, 221))
+        self.label2.setGeometry(QtCore.QRect(440, 20, 427, 320))
         self.label2.setFrameShape(QtGui.QFrame.StyledPanel)
         self.label2.setFrameShadow(QtGui.QFrame.Raised)
         self.label2.setObjectName(_fromUtf8("label2"))
 
         self.label3 = QtGui.QLabel(self.centralWidget)
-        self.label3.setGeometry(QtCore.QRect(10, 260, 351, 221))
+        self.label3.setGeometry(QtCore.QRect(10, 345, 427, 320))
         self.label3.setFrameShape(QtGui.QFrame.StyledPanel)
         self.label3.setFrameShadow(QtGui.QFrame.Raised)
         self.label3.setObjectName(_fromUtf8("label3"))
+
+        self.label4 = QtGui.QLabel(self.centralWidget)
+        self.label4.setGeometry(QtCore.QRect(440, 345, 427, 320))
+        self.label4.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.label4.setFrameShadow(QtGui.QFrame.Raised)
+        self.label4.setObjectName(_fromUtf8("label4"))
 
         MainWindow.setCentralWidget(self.centralWidget)
         self.mainToolBar = QtGui.QToolBar(MainWindow)

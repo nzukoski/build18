@@ -23,7 +23,7 @@ class CameraControl:
 
     #remoteHosts = [ "http://192.168.2.131:8081/video1.mjpeg",
     #                "http://192.168.2.136:8081/video1.mjpeg"]# "http://192.168.2.6:8081/video1.mjpeg"]
-    remoteHosts = ["testVideo.mov", "testVideo.mov", "testVideo.mov"]
+    remoteHosts = ["testVideo.mov", "testVideo.mov", "testVideo.mov", "testVideo.mov"]
     numHosts = len(remoteHosts)
     captureSources = []
     frames = []

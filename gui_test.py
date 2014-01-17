@@ -1,8 +1,11 @@
+#http://wrdeoftheday.com/?page_id=2
+
 import sys
 import cv2
 import numpy as np
 from PyQt4 import Qt, QtCore, QtGui
 from gui import Ui_MainWindow
+from roomal_control import CameraControl
 
 def convertImg(frame):
     try:

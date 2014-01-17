@@ -10,14 +10,16 @@ from roomal_control import CameraControl
 import gui_logic as gl
 
 def convertImg(frame):
-    try:
-        height, width = frame.shape[:2]
-        img = QtGui.QImage(frame, width, height, QtGui.QImage.Format_RGB888)
-        img = QtGui.QPixmap.fromImage(img)
-        return img
-    except:
-        print "failed to convert img"
-        return None
+    # try:
+    height, width, bytesPerComponent= frame.shape
+    bytesPerLine = bytesPerComponent*width
+
+    img = QtGui.QImage(frame.data, width, height, bytesPerLine, QtGui.QImage.Format_RGB888)
+    img = QtGui.QPixmap.fromImage(img)
+    return img
+    # except:
+    #     print "failed to convert img"
+    #     return None
 
 class ControlMainWindow(QtGui.QMainWindow):
     #attributes:
@@ -52,6 +54,7 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.view = 2
         
     def play(self):
+        rawHeatmap = CC.getLatestRawHeatmaps()
         if self.view == 0:
             img = CC.getLatestFrames()
         elif self.view == 1:
@@ -69,7 +72,7 @@ class ControlMainWindow(QtGui.QMainWindow):
             self.ui.label3.mousePressEvent = self.getPos
 
             for t in gl.teams:
-                t.update(img[t.label])   #<---FIX: NEED TO CONVERT TO GRAYSCALE FIRST!!! QPixMap ->grayscale  ---->     # pass in the correct image according to previous given label indentifier
+                t.update(rawHeatmap[0])   
             gl.sortTeams()                      # sort by intensity
             self.ui.tableWidget.clearContents() # clear widget
             for i in xrange(len(gl.teams)):    # display new order in widget
@@ -94,18 +97,21 @@ class ControlMainWindow(QtGui.QMainWindow):
         # label is which box (camera display) its in 1,2, or 3 starting from top-left
         ans, ok = QtGui.QInputDialog.getText(self, "Team Info", "Enter exactly --> label:team_name:x1,y1:x2,y2")
 
+        if (ok and len(ans) > 0):
+            insert_team(ans)
+
+    def insert_team(self, ans):
         # OK was clicked with data
-        if ok and len(ans) > 0:
-            info = ans.split(":")
-            label,_ = info[0].toInt()
-            name = info[1]
-            x1,y1 = info[2].split(",")
-            x2,y2 = info[3].split(",")
-            x1,_ = x1.toInt()
-            x2,_ = x2.toInt()
-            y1,_ = y1.toInt()
-            y2,_ = y2.toInt()
-            gl.addTeam(x1, x2, y1, y2, id = name, label = label )
+        info = ans.split(":")
+        label = int(info[0])
+        name = info[1]
+        x1,y1 = info[2].split(",")
+        x2,y2 = info[3].split(",")
+        x1 = int(x1)
+        x2 = int(x2)
+        y1 = int(y1)
+        y2 = int(y2)
+        gl.addTeam(x1, x2, y1, y2, id = name, label = label )
 
     def remove_team(self):
         ans, ok = QtGui.QInputDialog.getText(self, "Remove Team", "Enter the team's ID'")
@@ -125,5 +131,8 @@ if __name__ == "__main__":
     CC.connectToAllHosts()       
     CC.startMotionDetection()
     mySW = ControlMainWindow()
+    for i in xrange(50):
+        mySW.insert_team("0:hi" + str(i) + ":0,0:150,150")
     mySW.show()
     sys.exit(app.exec_())
+

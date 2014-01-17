@@ -20,7 +20,7 @@ class ColorMap:
 
 class CameraControl:
 
-    #remoteHosts = ["http://192.168.2.103:8081/video1.mjpeg", "http://192.168.2.131:8081/video1.mjpeg",
+    #remoteHosts = [ "http://192.168.2.131:8081/video1.mjpeg",
     #                "http://192.168.2.136:8081/video1.mjpeg"]# "http://192.168.2.6:8081/video1.mjpeg"]
     remoteHosts = ["testVideo.mov", "testVideo.mov", "testVideo.mov"]
     numHosts = len(remoteHosts)
@@ -40,7 +40,8 @@ class CameraControl:
     def convertToPrettyHeatMap(self, raw_heatmap):
         max = np.max(raw_heatmap)
         normalized = np.uint8(raw_heatmap*(np.floor(255/max)))
-        return self.colorMapper.convertToJet(normalized)
+        colorized =  self.colorMapper.convertToJet(normalized)
+        return cv2.cvtColor(colorized, cv2.cv.CV_BGR2RGB)
 
     def connectToHost(self, hostName):
         captureSource = cv2.VideoCapture(hostName)
@@ -68,6 +69,9 @@ class CameraControl:
 
     def getLatestThresholds(self):
         return self.thresholds
+
+    def getLatestRawHeatmaps(self):
+        return self.raw_heatmaps
 
     # Initialize video recording
     def initVideoRecording(self):
@@ -122,7 +126,7 @@ class CameraControl:
             if (self.record):
                 videoRecorders[camNumber].write(frame)
 
-            self.frames[camNumber] = frame
+            self.frames[camNumber] = cv2.cvtColor(frame, cv2.cv.CV_BGR2RGB)
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             flow = cv2.calcOpticalFlowFarneback(prevGray, gray, 0.5, 1, 20, 3, 5, 1.2, 0)
             self.prevGrayFrames[camNumber] = gray

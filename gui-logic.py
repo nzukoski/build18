@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+import cv2
+import numpy as np
+
 # Region of interest
 class Roi(object):
 	roiCount = 0	# static Roi counter used as id
@@ -58,6 +61,20 @@ def updateAll(image):
 	for t in teams:
 		t.update(image)
 
+# Creates a rectangular border mask from given params
+def createRectMask(img, x,x2,y,y2, color = None, borderWith = None):
+	color = color or 255
+	borderWith = borderWidth or 10
+	h = y2 - y
+	w = x2 - x
+	mask = np.zeros(img.shape[:2],np.uint8)
+	mask[y:y+borderWith,x:x+w] = color		# top
+	mask[y+h:y+h+borderWith,x:x+w+borderWith] = color	# bottom
+	mask[y:y+h,x:x+borderWith] = color		# left
+	mask[y:y+h,x+w:x+w+borderWith] = color	# right 
+	return mask
+
+
 
 # ---------------------- Logic goes here ---------------------------------
 image = getImage()	# Pass in or get an image to work with
@@ -75,5 +92,9 @@ sortTeams()
 
 for i in xrange(len(teams)):
 	print teams[i].id," ", teams[i].intensity
+
+
+
+
 
 

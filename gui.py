@@ -32,9 +32,12 @@ class Ui_MainWindow(object):
         MainWindow.setMinimumSize(QtCore.QSize(800, 600))
         self.centralWidget = QtGui.QWidget(MainWindow)
         self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
-        self.tableView = QtGui.QTableView(self.centralWidget)
-        self.tableView.setGeometry(QtCore.QRect(380, 260, 351, 221))
-        self.tableView.setObjectName(_fromUtf8("tableView"))
+
+        self.tableWidget = QtGui.QTableWidget(self.centralWidget)
+        self.tableWidget.setGeometry(QtCore.QRect(380, 260, 351, 221))
+        self.tableWidget.setObjectName(_fromUtf8("tableWidget"))
+        self.tableWidget.setRowCount(20)
+        self.tableWidget.setColumnCount(1)
 
         self.label1 = QtGui.QLabel(self.centralWidget)
         self.label1.setGeometry(QtCore.QRect(10, 20, 351, 221))

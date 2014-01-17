@@ -60,22 +60,60 @@ class ControlMainWindow(QtGui.QMainWindow):
             img = CC.getLatestHeatmaps()
         if len(img) > 0:
             self.ui.label1.setPixmap(convertImg(img[0]))
+            self.ui.label1.mousePressEvent = self.getPos
+
             self.ui.label2.setPixmap(convertImg(img[1]))
+            self.ui.label2.mousePressEvent = self.getPos
+
             self.ui.label3.setPixmap(convertImg(img[2]))   # QLabels hold images that we update
+            self.ui.label3.mousePressEvent = self.getPos
+
+            for t in gl.teams:
+                t.update(img[t.label])   #<---FIX: NEED TO CONVERT TO GRAYSCALE FIRST!!! QPixMap ->grayscale  ---->     # pass in the correct image according to previous given label indentifier
+            gl.sortTeams()                      # sort by intensity
+            self.ui.tableWidget.clearContents() # clear widget
+            for i in xrange(len(gl.teams)):    # display new order in widget
+                item = QtGui.QTableWidgetItem(gl.teams[i].id) # widget item associated with display
+                self.ui.tableWidget.setItem(i, 0, item)
         else:
             print "No images to pull!"
+
+    def getPos(self , event):
+        x = event.pos().x()
+        y = event.pos().y() 
+        print "x: ", x, " y:", y
 
     def clear_teams(self):
         gl.removeAll()
 
-    def add_team(self, x1, x2, y1, y2, color = None, id = None):
-        gl.addTeam(self, x1, x2, y1, y2, color, id)
+    def add_team(self):
+        # d = QtGui.QInputDialog(self)
+        # d.show()
 
-    def remove_team(self, id):
-        gl.removeTeam(id)
+        # Get user input: we figure out x,y coords by observing position of mouse click events over the images.
+        # label is which box (camera display) its in 1,2, or 3 starting from top-left
+        ans, ok = QtGui.QInputDialog.getText(self, "Team Info", "Enter exactly --> label:team_name:x1,y1:x2,y2")
+
+        # OK was clicked with data
+        if ok and len(ans) > 0:
+            info = ans.split(":")
+            label,_ = info[0].toInt()
+            name = info[1]
+            x1,y1 = info[2].split(",")
+            x2,y2 = info[3].split(",")
+            x1,_ = x1.toInt()
+            x2,_ = x2.toInt()
+            y1,_ = y1.toInt()
+            y2,_ = y2.toInt()
+            gl.addTeam(x1, x2, y1, y2, id = name, label = label )
+
+    def remove_team(self):
+        ans, ok = QtGui.QInputDialog.getText(self, "Remove Team", "Enter the team's ID'")
+        if ok and len(ans) > 0:
+            gl.removeTeam(ans)
 
     def reset(self):
-        gl.removeAll()
+        self.clear_teams()
         CC = CameraControl()
         CC.connectToAllHosts()       
         CC.startMotionDetection()

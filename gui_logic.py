@@ -1,18 +1,20 @@
 #!/usr/bin/env python
 
 import numpy as np
+from random import randint
 
 # Region of interest
 class Roi(object):
 	roiCount = 0	# static Roi counter used as id
-	def __init__(self, x1, x2, y1, y2, color = None, id = None):
+	def __init__(self, x1, x2, y1, y2, color = None, id = None, label = None):
+		self.label = label or None
 		self.id = id or self.__class__.roiCount
 		self.__class__.roiCount += 1
 		self.x1 = x1
 		self.x2 = x2
 		self.y1 = y1
 		self.y2 = y2
-		self.color = color or [255,255,255] # white rgb
+		self.color = color or [randint(1,254),randint(1,254),randint(1,254)] # white rgb
 		self.intensity = 0
 
 	# Calculates color intensity in a region of interest
@@ -29,12 +31,13 @@ class Roi(object):
 		return self.intensity
 
 # Button: adds team to sorted (intensity-descending) teams list
-def addTeam(x1, x2, y1, y2, color = None, id = None):
-	t = Roi(x1, x2, y1, y2, color, id)
+def addTeam(x1, x2, y1, y2, color = None, id = None, label = None):
+	t = Roi(x1, x2, y1, y2, color, id, label)
 	if len(teams) <= 0:
 		teams.append(t)
 	else:
 		for i in xrange(len(teams)):
+			print teams[i].intensity, "t: ", t.intensity
 			if teams[i].intensity < t.intensity:
 				teams.insert(i,t) # prepend
 				return t.id

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import cv2
 import numpy as np
 
 # Region of interest
@@ -48,6 +47,9 @@ def removeTeam(id):
 		if t.id == id:
 			teams.remove(t)
 
+def removeAll():
+	teams = []
+
 def sortTeams():
 	teams.sort(key=lambda t: t.intensity, reverse=True)
 
@@ -75,26 +77,7 @@ def createBorderMask(img, x,x2,y,y2, color = None, borderWidth = None):
 	return mask
 
 
-
-# ---------------------- Logic goes here ---------------------------------
-image = getImage()	# Pass in or get an image to work with
 teams = []			# List of teams
-
-
-addTeam(0,2,0,1, [100,100,100])	# teams
-addTeam(0,1,0,1, [150,150,150])	# teams
-tId = addTeam(0,3,0,1)	# teams
-
-removeTeam(tId)	# remove a team
-
-updateAll(image)
-sortTeams()
-
-for i in xrange(len(teams)):
-	print teams[i].id," ", teams[i].intensity
-
-
-
 
 
 

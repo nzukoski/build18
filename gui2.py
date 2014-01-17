@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import cv2
 import numpy as np
 
@@ -13,8 +15,8 @@ class gui():
 #   drawRect: creates a rectangle on this gui's window
 #   x1, x2, y1, y2: coordinates
 #   color: array (size 4) with rgba color values for rectangle
-    def drawRect(x1, x2, y1, y2, color)
+    def drawRect(self, x1, x2, y1, y2, color):
+    	pass
     
 def main():
-    app = gui()
-    
+    app = gui()    

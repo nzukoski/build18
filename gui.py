@@ -35,11 +35,18 @@ class Ui_MainWindow(object):
         self.tableView = QtGui.QTableView(self.centralWidget)
         self.tableView.setGeometry(QtCore.QRect(380, 260, 351, 221))
         self.tableView.setObjectName(_fromUtf8("tableView"))
-        self.frame = QtGui.QFrame(self.centralWidget)
-        self.frame.setGeometry(QtCore.QRect(10, 260, 351, 221))
-        self.frame.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.frame.setFrameShadow(QtGui.QFrame.Raised)
-        self.frame.setObjectName(_fromUtf8("frame"))
+
+        self.label1 = QtGui.QLabel(self.centralWidget)
+        self.label1.setGeometry(QtCore.QRect(10, 260, 351, 221))
+        self.label1.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.label1.setFrameShadow(QtGui.QFrame.Raised)
+        self.label1.setObjectName(_fromUtf8("frame"))
+
+        # self.label = QtGui.QLabel(self)
+        # self.label.setFrameStyle(QtGui.QFrame.Panel)
+        # # self.label.setText("first line\nsecond line")
+        # self.label.setAlignment(Qt.AlignBottom | Qt.AlignRight)
+
         self.frame_2 = QtGui.QFrame(self.centralWidget)
         self.frame_2.setGeometry(QtCore.QRect(10, 20, 351, 221))
         self.frame_2.setFrameShape(QtGui.QFrame.StyledPanel)

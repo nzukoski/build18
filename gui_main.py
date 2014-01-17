@@ -59,9 +59,12 @@ class ControlMainWindow(QtGui.QMainWindow):
             img = CC.getThreshholds()
         else:
             img = CC.getLatestHeatmaps()
-        QLabel1.setPixmap(img[0])   # QLabels hold images that we update
-        QLabel1.setPixmap(img[1])
-        QLabel1.setPixmap(img[2])
+        if len(img > 0):
+            self.ui.label1.setPixmap(img[0])   # QLabels hold images that we update
+            QLabel1.setPixmap(img[1])
+            QLabel1.setPixmap(img[2])
+        else:
+            print "No images to pull!"
 
     def clear_teams(self):
         gl.removeAll()

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # import numpy as np
 # import cv2 as cv2
 
@@ -25,7 +23,7 @@ _,f = c.read()
 avg1 = np.float32(f)
 avg2 = np.float32(f)
 print f.shape
-heatmap = np.zeros((720,1280), np.uint8)
+heatmap = np.zeros((480,640), np.uint8)
  
 while(1):
     _,f = c.read()
@@ -50,3 +48,4 @@ while(1):
  
 cv2.destroyAllWindows()
 c.release()
+

@@ -37,7 +37,7 @@ class Ui_MainWindow(object):
         self.tableWidget.setGeometry(QtCore.QRect(380, 260, 351, 221))
         self.tableWidget.setObjectName(_fromUtf8("tableWidget"))
         self.tableWidget.setRowCount(20)
-        self.tableWidget.setColumnCount(1)
+        self.tableWidget.setColumnCount(2)
 
         self.label1 = QtGui.QLabel(self.centralWidget)
         self.label1.setGeometry(QtCore.QRect(10, 20, 351, 221))

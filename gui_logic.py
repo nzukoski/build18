@@ -23,10 +23,7 @@ class Roi(object):
 
 	# Calculates color intensity in a region of interest
 	def calculateIntensity(self,image):
-		intensity = cv2.mean(np.int32(image), mask=self.mask)
-		# for row in xrange(self.y1, self.y2):
-		# 	for col in xrange(self.x1, self.x2):
-		# 		intensity += image[row][col]
+		intensity = np.sum(cv2.mean(np.int32(image), mask=self.mask))
 		return intensity
 
 	# Updates Roi

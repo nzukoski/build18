@@ -102,7 +102,7 @@ class CameraControl:
             self.raw_heatmaps.append(np.zeros((width,height), np.uint32))
             self.pretty_heatmaps.append(self.colorMapper.convertToJet(np.zeros((width,height), np.uint8)))
             self.frames.append(frame)
-            self.thresholds.append(np.zeros((width,height), np.uint8))
+            self.thresholds.append(frame)
 
         for i in xrange(self.numHosts):
             newThread = threading.Thread(target=self.mainLoopForCam, args=(i,))
@@ -136,9 +136,9 @@ class CameraControl:
             v = np.sqrt(fx*fx+fy*fy)
             normalized = np.uint8(np.minimum(v*4, 255))
             retval, threshold = cv2.threshold(normalized, 20, 1, cv2.THRESH_BINARY)
-            self.thresholds[camNumber] = threshold
+            self.thresholds[camNumber] = np.dstack((threshold, threshold, threshold))
+            print self.thresholds[camNumber].shape
             self.raw_heatmaps[camNumber] += threshold
-
             self.pretty_heatmaps[camNumber] = self.convertToPrettyHeatMap(self.raw_heatmaps[camNumber])
 
     def shutdown(self):

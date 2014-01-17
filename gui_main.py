@@ -22,6 +22,8 @@ def convertImg(frame):
     #     return None
 
 class ControlMainWindow(QtGui.QMainWindow):
+    #used to limit how often its updated
+    currentFrame = 0
     #attributes:
     #   view: 0=standard, 1=motion, 2=heatmap
     def __init__(self, parent=None):
@@ -54,6 +56,7 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.view = 2
         
     def play(self):
+        self.currentFrame += 1
         rawHeatmap = CC.getLatestRawHeatmaps()
         if self.view == 0:
             img = CC.getLatestFrames()
@@ -71,13 +74,18 @@ class ControlMainWindow(QtGui.QMainWindow):
             self.ui.label3.setPixmap(convertImg(img[2]))   # QLabels hold images that we update
             self.ui.label3.mousePressEvent = self.getPos
 
-            for t in gl.teams:
-                t.update(rawHeatmap[0])   
-            gl.sortTeams()                      # sort by intensity
-            self.ui.tableWidget.clearContents() # clear widget
-            for i in xrange(len(gl.teams)):    # display new order in widget
-                item = QtGui.QTableWidgetItem(gl.teams[i].id) # widget item associated with display
-                self.ui.tableWidget.setItem(i, 0, item)
+            if ((self.currentFrame % 10) == 0):
+                for t in gl.teams:
+                    t.update(rawHeatmap[0])   
+                gl.sortTeams()                      # sort by intensity
+                self.ui.tableWidget.clearContents() # clear widget
+                for i in xrange(len(gl.teams)):    # display new order in widget
+                    item = QtGui.QTableWidgetItem(gl.teams[i].id) # widget item associated with display
+                    intensityString = '%.2f' % gl.teams[i].intensity
+                    intensity = QtGui.QTableWidgetItem(intensityString)
+                    self.ui.tableWidget.setItem(i, 0, item)
+                    self.ui.tableWidget.setItem(i, 1, intensity)
+
         else:
             print "No images to pull!"
 
@@ -131,7 +139,7 @@ if __name__ == "__main__":
     CC.connectToAllHosts()       
     CC.startMotionDetection()
     mySW = ControlMainWindow()
-    for i in xrange(50):
+    for i in xrange(5):
        mySW.insert_team("0:hi" + str(i) + ":0,0:150,150")
     mySW.show()
     sys.exit(app.exec_())

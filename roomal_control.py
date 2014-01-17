@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import threading
+import json
 from time import time, sleep
 
 class ColorMap:
@@ -36,6 +37,7 @@ class CameraControl:
     run = True # loop control
     record = False
     colorMapper = ColorMap()
+    curFrames = [0,0,0,0]
 
     def convertToPrettyHeatMap(self, raw_heatmap):
         max = np.max(raw_heatmap)
@@ -104,6 +106,7 @@ class CameraControl:
             self.frames.append(frame)
             self.thresholds.append(frame)
 
+        #readBackups()
         for i in xrange(self.numHosts):
             newThread = threading.Thread(target=self.mainLoopForCam, args=(i,))
             newThread.start()
@@ -114,6 +117,7 @@ class CameraControl:
         self.run = True
         frameToShow = 0
         while (self.run):
+            self.curFrames[camNumber] += 1
             startTime = time()
             capture = self.captureSources[camNumber]
             prevGray = np.float32(self.prevGrayFrames[camNumber])
@@ -137,19 +141,26 @@ class CameraControl:
             normalized = np.uint8(np.minimum(v*4, 255))
             retval, threshold = cv2.threshold(normalized, 20, 1, cv2.THRESH_BINARY)
             self.thresholds[camNumber] = np.dstack((threshold, threshold, threshold))
-            print self.thresholds[camNumber].shape
             self.raw_heatmaps[camNumber] += threshold
             self.pretty_heatmaps[camNumber] = self.convertToPrettyHeatMap(self.raw_heatmaps[camNumber])
 
+            if (self.curFrames[camNumber] % 20) == 0:
+                np.save("heatmap_backup_" + str(camNumber), self.raw_heatmaps[camNumber].data)
+    
     def shutdown(self):
         self.run = False
         for c in self.captureSources:
             c.release()
 
+    def readBackups(self):
+        for i in xrange(self.numHosts):
+            self.raw_heatmaps[i].data = np.load("heatmap_backup_" + str(i) + ".npy")
+
 if __name__ == "__main__":
     cc = CameraControl()
     cc.connectToAllHosts()
     cc.startMotionDetection()
+    cc.readBackups()
     frameToShow = 0
     colorMapper = ColorMap()
     while (True):

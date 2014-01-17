@@ -44,6 +44,8 @@ def removeTeam(id):
 		if t.id == id:
 			teams.remove(t)
 
+def sortTeams():
+	teams.sort(key=lambda t: t.intensity, reverse=True)
 
 # Get an image (stream) to display
 def getImage():
@@ -57,6 +59,8 @@ teams = []
 addTeam(image,0,2,0,1)	# teams
 addTeam(image,0,1,0,1)	# teams
 addTeam(image,0,3,0,1)	# teams
+
+sortTeams()
 
 for i in xrange(3):
 	print teams[i].id," ", teams[i].intensity

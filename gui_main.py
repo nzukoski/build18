@@ -12,8 +12,7 @@ import gui_logic as gl
 def convertImg(frame):
     try:
         height, width = frame.shape[:2]
-        img = QtGui.QImage(frame, width, height,
-                            QtGui.QImage.Format_RGB888)
+        img = QtGui.QImage(frame, width, height, QtGui.QImage.Format_RGB888)
         img = QtGui.QPixmap.fromImage(img)
         return img
     except:
@@ -56,13 +55,13 @@ class ControlMainWindow(QtGui.QMainWindow):
         if self.view == 0:
             img = CC.getLatestFrames()
         elif self.view == 1:
-            img = CC.getThreshholds()
+            img = CC.getLatestThresholds()
         else:
             img = CC.getLatestHeatmaps()
-        if len(img > 0):
-            self.ui.label1.setPixmap(img[0])   # QLabels hold images that we update
-            QLabel1.setPixmap(img[1])
-            QLabel1.setPixmap(img[2])
+        if len(img) > 0:
+            self.ui.label1.setPixmap(convertImg(img[0]))
+            self.ui.label2.setPixmap(convertImg(img[1]))
+            self.ui.label3.setPixmap(convertImg(img[2]))   # QLabels hold images that we update
         else:
             print "No images to pull!"
 

@@ -18,17 +18,17 @@ class CameraControl:
     width = 640
     height = 480
     run = True # loop control
+    record = False
 
     def connectToHost(self, hostName):
-        captureSource = cv2.VideoCapture(host)
+        captureSource = cv2.VideoCapture(hostName)
         self.captureSources.append(captureSource)
 
     def connectToAllHosts(self):
         # Connect to to remote hosts
         threads = []
-        for host in remoteHosts:
-            newThread = threading.Thread(target=connectToHost, args= (host,))
-            newThread.daemon = True
+        for host in self.remoteHosts:
+            newThread = threading.Thread(target=self.connectToHost, args= (host,))
             threads.append(newThread)
             newThread.start()
 
@@ -50,7 +50,7 @@ class CameraControl:
     # Initialize video recording
     def initVideoRecording(self):
         # Set up recording
-        record = False # Set true to record
+        record = True # Set true to record
         fps = 15
         capSize = (height,width)
         fourcc = cv2.cv.CV_FOURCC('m', 'p', '4', 'v')
@@ -60,8 +60,8 @@ class CameraControl:
             self.videoRecorders.append(testVideoWriter)
 
     # Initialize motion detection
-    def initMotionDetection(self):
-        for i in xrange(numHosts):
+    def startMotionDetection(self):
+        for i in xrange(self.numHosts):
             capture = self.captureSources[i]
             success, frame = capture.read()
             if (not success):
@@ -74,12 +74,8 @@ class CameraControl:
 
             self.prevGrayFrames.append(cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY))
             self.heatmaps.append(np.zeros((width,height), np.uint8))
-
-    # Thread that shit
-    def startMotionDetection(self):
-        # Timing stuff
-        totalTime = 0
-        numFrames = 0
+            self.frames.append(frame)
+            self.thresholds.append(np.zeros((width,height), np.uint8))
 
         newThread = threading.Thread(target=self.mainLoop, args=())
         newThread.start()
@@ -90,7 +86,7 @@ class CameraControl:
         self.run = True
         frameToShow = 0
         while (self.run):
-            for i in xrange(numHosts):
+            for i in xrange(self.numHosts):
                 startTime = time()
                 capture = self.captureSources[i]
                 prevGray = np.float32(self.prevGrayFrames[i])
@@ -98,10 +94,9 @@ class CameraControl:
                 success, frame = capture.read()
                 if (not success):
                     print "capture failed on host " + str(i)  + " continuing..."
-                    print "average time: " + str( totalTime / numFrames)
                     continue
 
-                if (record):
+                if (self.record):
                     videoRecorders[i].write(frame)
 
                 self.frames[i] = frame
@@ -117,25 +112,35 @@ class CameraControl:
                 self.thresholds[i] = threshold
                 self.heatmaps[i] += threshold
 
-                if (frameToShow == 0):
-                    cv2.imshow("host_" + str(i), frame)
-                elif (frameToShow == 1):
-                    cv2.imshow("host_" + str(i), heatmaps[i])
-                elif (frameToShow == 2):
-                    cv2.imshow("host_" + str(i), threshold * 255)
-
-                totalTime += (time() - startTime)
-                numFrames += 1
-
-        # cleanup
-        if (record):
-            for recorder in videoRecorders:
-                recorder.release()
-
-        for c in captureSources:
+        for c in self.captureSources:
             c.release()
-        cv2.destroyAllWindows()
 
+cc = CameraControl()
+cc.connectToAllHosts()
+cc.startMotionDetection()
+frameToShow = 0
+
+while (True):
+    k = cv2.waitKey(100)
+
+    if k == 49: # 1
+        frameToShow = 0
+    if k == 50: # 2
+        frameToShow = 1
+    if k == 51: # 3
+        frameToShow = 2
+
+    if k == 27: # esc
+        cc.run = False
+        break
+
+    for i in xrange(cc.numHosts):
+        if (frameToShow == 0):
+            cv2.imshow("host_" + str(i), cc.getLatestFrames()[i])
+        elif (frameToShow == 1):
+            cv2.imshow("host_" + str(i), cc.getLatestHeatmaps()[i])
+        elif (frameToShow == 2):
+            cv2.imshow("host_" + str(i), cc.getLatestThresholds()[i] * 255)
 
 
             

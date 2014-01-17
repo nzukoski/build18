@@ -2,45 +2,102 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Thu Jan 16 20:38:44 2014
-#      by: pyside-uic 0.2.15 running on PySide 1.2.1
+# Created: Fri Jan 17 01:13:01 2014
+#      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
 
-from PySide import QtCore, QtGui
+from PyQt4 import QtCore, QtGui
+
+try:
+    _fromUtf8 = QtCore.QString.fromUtf8
+except AttributeError:
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(716, 500)
+        MainWindow.setObjectName(_fromUtf8("MainWindow"))
+        MainWindow.resize(800, 600)
+        MainWindow.setMinimumSize(QtCore.QSize(800, 600))
         self.centralWidget = QtGui.QWidget(MainWindow)
-        self.centralWidget.setObjectName("centralWidget")
-        self.videoFrame = QtGui.QLabel(self.centralWidget)
-        self.videoFrame.setGeometry(QtCore.QRect(40, 30, 301, 281))
-        self.videoFrame.setObjectName("videoFrame")
+        self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
+        self.tableView = QtGui.QTableView(self.centralWidget)
+        self.tableView.setGeometry(QtCore.QRect(380, 260, 351, 221))
+        self.tableView.setObjectName(_fromUtf8("tableView"))
+        self.frame = QtGui.QFrame(self.centralWidget)
+        self.frame.setGeometry(QtCore.QRect(10, 260, 351, 221))
+        self.frame.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtGui.QFrame.Raised)
+        self.frame.setObjectName(_fromUtf8("frame"))
+        self.frame_2 = QtGui.QFrame(self.centralWidget)
+        self.frame_2.setGeometry(QtCore.QRect(10, 20, 351, 221))
+        self.frame_2.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.frame_2.setFrameShadow(QtGui.QFrame.Raised)
+        self.frame_2.setObjectName(_fromUtf8("frame_2"))
+        self.frame_3 = QtGui.QFrame(self.centralWidget)
+        self.frame_3.setGeometry(QtCore.QRect(380, 20, 351, 221))
+        self.frame_3.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.frame_3.setFrameShadow(QtGui.QFrame.Raised)
+        self.frame_3.setObjectName(_fromUtf8("frame_3"))
         MainWindow.setCentralWidget(self.centralWidget)
         self.mainToolBar = QtGui.QToolBar(MainWindow)
-        self.mainToolBar.setObjectName("mainToolBar")
+        self.mainToolBar.setObjectName(_fromUtf8("mainToolBar"))
         MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.mainToolBar)
         self.statusBar = QtGui.QStatusBar(MainWindow)
-        self.statusBar.setObjectName("statusBar")
+        self.statusBar.setObjectName(_fromUtf8("statusBar"))
         MainWindow.setStatusBar(self.statusBar)
         self.menuBar = QtGui.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 716, 21))
-        self.menuBar.setObjectName("menuBar")
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 800, 21))
+        self.menuBar.setObjectName(_fromUtf8("menuBar"))
         self.menuRoomal = QtGui.QMenu(self.menuBar)
-        self.menuRoomal.setObjectName("menuRoomal")
+        self.menuRoomal.setObjectName(_fromUtf8("menuRoomal"))
+        self.menuFile = QtGui.QMenu(self.menuBar)
+        self.menuFile.setObjectName(_fromUtf8("menuFile"))
         MainWindow.setMenuBar(self.menuBar)
         self.actionFile = QtGui.QAction(MainWindow)
-        self.actionFile.setObjectName("actionFile")
+        self.actionFile.setObjectName(_fromUtf8("actionFile"))
+        self.actionStandard = QtGui.QAction(MainWindow)
+        self.actionStandard.setObjectName(_fromUtf8("actionStandard"))
+        self.actionMotion = QtGui.QAction(MainWindow)
+        self.actionMotion.setObjectName(_fromUtf8("actionMotion"))
+        self.actionHeat_Map = QtGui.QAction(MainWindow)
+        self.actionHeat_Map.setObjectName(_fromUtf8("actionHeat_Map"))
+        self.actionReset_Heat_Map = QtGui.QAction(MainWindow)
+        self.actionReset_Heat_Map.setObjectName(_fromUtf8("actionReset_Heat_Map"))
+        self.actionClear_Teams = QtGui.QAction(MainWindow)
+        self.actionClear_Teams.setObjectName(_fromUtf8("actionClear_Teams"))
+        self.actionAdd_Teams = QtGui.QAction(MainWindow)
+        self.actionAdd_Teams.setObjectName(_fromUtf8("actionAdd_Teams"))
+        self.menuRoomal.addAction(self.actionStandard)
+        self.menuRoomal.addAction(self.actionMotion)
+        self.menuRoomal.addAction(self.actionHeat_Map)
+        self.menuFile.addAction(self.actionReset_Heat_Map)
+        self.menuFile.addAction(self.actionClear_Teams)
+        self.menuFile.addAction(self.actionAdd_Teams)
+        self.menuBar.addAction(self.menuFile.menuAction())
         self.menuBar.addAction(self.menuRoomal.menuAction())
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
-        self.videoFrame.setText(QtGui.QApplication.translate("MainWindow", "TextLabel", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuRoomal.setTitle(QtGui.QApplication.translate("MainWindow", "File", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionFile.setText(QtGui.QApplication.translate("MainWindow", "File", None, QtGui.QApplication.UnicodeUTF8))
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow", None))
+        self.menuRoomal.setTitle(_translate("MainWindow", "View", None))
+        self.menuFile.setTitle(_translate("MainWindow", "File", None))
+        self.actionFile.setText(_translate("MainWindow", "File", None))
+        self.actionStandard.setText(_translate("MainWindow", "Standard", None))
+        self.actionMotion.setText(_translate("MainWindow", "Motion", None))
+        self.actionHeat_Map.setText(_translate("MainWindow", "Heat Map", None))
+        self.actionReset_Heat_Map.setText(_translate("MainWindow", "Reset Heat Map", None))
+        self.actionClear_Teams.setText(_translate("MainWindow", "Clear Teams", None))
+        self.actionAdd_Teams.setText(_translate("MainWindow", "Add Team", None))
 

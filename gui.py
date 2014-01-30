@@ -106,7 +106,7 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow", None))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Roomal GUI 3000", None))
         self.menuRoomal.setTitle(_translate("MainWindow", "View", None))
         self.menuFile.setTitle(_translate("MainWindow", "File", None))
         self.actionFile.setText(_translate("MainWindow", "File", None))

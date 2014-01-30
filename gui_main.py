@@ -92,7 +92,8 @@ class ControlMainWindow(QtGui.QMainWindow):
                     self.ui.tableWidget.setItem(i, 1, intensity)
 
         else:
-            print "No images to pull!"
+            pass
+            #print "No images to pull!"
 
     def getPos(self , event):
         x = event.pos().x()

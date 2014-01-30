@@ -21,9 +21,9 @@ class ColorMap:
 
 class CameraControl:
 
-    #remoteHosts = [ "http://192.168.2.131:8081/video1.mjpeg",
-    #                "http://192.168.2.136:8081/video1.mjpeg"]# "http://192.168.2.6:8081/video1.mjpeg"]
-    remoteHosts = ["testVideo.mov", "testVideo.mov", "testVideo.mov", "testVideo.mov"]
+    #remoteHosts = [ "http://192.168.2.131:8081/video1.mjpeg"]#, "http://192.168.2.146:8081/video1.mjpeg"]
+                    #"http://192.168.2.136:8081/video1.mjpeg"]#, "http://192.168.2.131:8081/video1.mjpeg"]# "http://192.168.2.6:8081/video1.mjpeg"]
+    remoteHosts = ["testVideo.mov"]
     numHosts = len(remoteHosts)
     captureSources = []
     frames = []
@@ -46,10 +46,14 @@ class CameraControl:
         return cv2.cvtColor(colorized, cv2.cv.CV_BGR2RGB)
 
     def connectToHost(self, hostName):
+        print "connecting to " + hostName
         captureSource = cv2.VideoCapture(hostName)
         self.captureSources.append(captureSource)
 
     def connectToAllHosts(self):
+        for i in xrange(4):
+            self.raw_heatmaps.append(np.zeros((self.height,self.width), np.uint32))
+        self.readBackups()
         # Connect to to remote hosts
         threads = []
         for host in self.remoteHosts:
@@ -102,6 +106,7 @@ class CameraControl:
 
             self.prevGrayFrames.append(cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY))
             self.raw_heatmaps.append(np.zeros((width,height), np.uint32))
+            #self.readBackups()
             self.pretty_heatmaps.append(self.colorMapper.convertToJet(np.zeros((width,height), np.uint8)))
             self.frames.append(frame)
             self.thresholds.append(frame)
@@ -153,7 +158,7 @@ class CameraControl:
             c.release()
 
     def readBackups(self):
-        for i in xrange(self.numHosts):
+        for i in xrange(3):
             self.raw_heatmaps[i].data = np.load("heatmap_backup_" + str(i) + ".npy")
 
 if __name__ == "__main__":
